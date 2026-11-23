@@ -1,15 +1,22 @@
 //
 //  main.m
-//  app-test
+//  anycast
 //
-//  Created by Corentin on 21/11/2026.
+//  Created by d3ller on 21/11/2026.
 //
 
 #import <Cocoa/Cocoa.h>
+#import "AppDelegate.h"
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        // Setup code that might create autoreleased objects goes here.
+        NSApplication *app = [NSApplication sharedApplication];
+        [app setActivationPolicy:NSApplicationActivationPolicyAccessory];
+                
+        AppDelegate *delegate =  [[AppDelegate alloc] init];
+        app.delegate = delegate;
+        
+        [app run];
     }
-    return NSApplicationMain(argc, argv);
+    return EXIT_SUCCESS;
 }

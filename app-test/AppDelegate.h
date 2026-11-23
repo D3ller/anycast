@@ -1,17 +1,13 @@
 //
 //  AppDelegate.h
-//  app-test
+//  anycast
 //
-//  Created by Corentin on 21/11/2026.
+//  Created by d3ller on 21/11/2026.
 //
 
 #import <Cocoa/Cocoa.h>
-#import <CoreData/CoreData.h>
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
-
-@property (readonly, strong) NSPersistentContainer *persistentContainer;
-
 
 @end
 

@@ -1,23 +1,80 @@
 //
 //  AppDelegate.m
-//  app-test
+//  anycast
 //
-//  Created by Corentin on 21/11/2026.
+//  Created by d3ller on 21/11/2026.
 //
 
 #import "AppDelegate.h"
+#import "src/Views/SearchBarView.h"
+#import "src/Views/ResultsView.h"
+#import "src/Views/Layouts/FooterView.h"
+#import "src/GlassWindow.h"
+#import "src/Services/AppCatalog.h"
 
 @interface AppDelegate ()
 
-
-- (void)save;
+@property (nonatomic, strong) GlassWindow *window;
+@property (nonatomic, strong) NSArray<AppEntry*> *appEntries;
 
 @end
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    // Insert code here to initialize your application
+    NSRect frame = NSMakeRect(0, 0, 750, 475);
+    
+    _window = [[GlassWindow alloc] initWithContentRect:frame styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:NO];
+    _window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua];
+    
+    NSView *content = [[NSView alloc] initWithFrame:frame];
+    content.wantsLayer = YES;
+    content.layer.cornerRadius = 26;
+    content.layer.cornerCurve = kCACornerCurveContinuous;
+    content.layer.masksToBounds = YES;
+    
+    NSGlassEffectView *glass = [[NSGlassEffectView alloc] initWithFrame:content.bounds];
+    glass.style = NSGlassEffectViewStyleRegular;
+    glass.cornerRadius = 0;
+    glass.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    glass.tintColor = [NSColor colorWithWhite:0 alpha:0.50];
+    
+    [content addSubview:glass];
+    
+    NSView *scrim = [[NSView alloc] initWithFrame:content.bounds];
+    scrim.wantsLayer = YES;
+    scrim.layer.backgroundColor = [NSColor colorWithWhite:0 alpha:0.30].CGColor;
+    scrim.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+    [content addSubview:scrim];
+
+    
+    SearchBarView *searchBarView = [[SearchBarView alloc] initWithFrame:NSMakeRect(0, 415, 750, 60)];
+    [content addSubview:searchBarView];
+    
+    ResultsView *resultsView = [[ResultsView alloc] initWithFrame:NSMakeRect(8, 8, 734, 407)];
+    [content addSubview:resultsView];
+    
+    FooterView *footerView = [[FooterView alloc] initWithFrame:NSMakeRect(0, 0, 750, 52)];
+    [content addSubview:footerView];
+    
+    AppCatalog *appCatalog = [[AppCatalog alloc] init];
+    _appEntries = [appCatalog scanApplications];
+    
+    [resultsView setItems:_appEntries];
+    
+    
+    [_window setTitle:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]];
+        
+    _window.opaque = NO;
+    _window.backgroundColor = [NSColor clearColor];
+    _window.hasShadow = NO;
+    _window.movableByWindowBackground = YES;
+    _window.contentView = content;
+    
+    [_window makeKeyAndOrderFront:nil];
+    [_window makeFirstResponder:searchBarView.searchField];
+    
+    [NSApp activate];
 }
 
 
@@ -30,101 +87,8 @@
     return YES;
 }
 
-
-#pragma mark - Core Data stack
-
-@synthesize persistentContainer = _persistentContainer;
-
-- (NSPersistentContainer *)persistentContainer {
-    // The persistent container for the application. This implementation creates and returns a container, having loaded the store for the application to it.
-    @synchronized (self) {
-        if (_persistentContainer == nil) {
-            _persistentContainer = [[NSPersistentContainer alloc] initWithName:@"app_test"];
-            [_persistentContainer loadPersistentStoresWithCompletionHandler:^(NSPersistentStoreDescription *storeDescription, NSError *error) {
-                if (error != nil) {
-                    // Replace this implementation with code to handle the error appropriately.
-                    // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                    
-                    /*
-                     Typical reasons for an error here include:
-                     * The parent directory does not exist, cannot be created, or disallows writing.
-                     * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                     * The device is out of space.
-                     * The store could not be migrated to the current model version.
-                     Check the error message to determine what the actual problem was.
-                    */
-                    NSLog(@"Unresolved error %@, %@", error, error.userInfo);
-                    abort();
-                }
-            }];
-        }
-    }
-    
-    return _persistentContainer;
-}
-
-#pragma mark - Core Data Saving and Undo support
-
-- (void)save {
-    // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
-    NSManagedObjectContext *context = self.persistentContainer.viewContext;
-
-    if (![context commitEditing]) {
-        NSLog(@"%@:%@ unable to commit editing before saving", [self class], NSStringFromSelector(_cmd));
-    }
-    
-    NSError *error = nil;
-    if (context.hasChanges && ![context save:&error]) {
-        // Customize this code block to include application-specific recovery steps.              
-        [[NSApplication sharedApplication] presentError:error];
-    }
-}
-
-- (NSUndoManager *)windowWillReturnUndoManager:(NSWindow *)window {
-    // Returns the NSUndoManager for the application. In this case, the manager returned is that of the managed object context for the application.
-    return self.persistentContainer.viewContext.undoManager;
-}
-
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
-    // Save changes in the application's managed object context before the application terminates.
-    NSManagedObjectContext *context = self.persistentContainer.viewContext;
-
-    if (![context commitEditing]) {
-        NSLog(@"%@:%@ unable to commit editing to terminate", [self class], NSStringFromSelector(_cmd));
-        return NSTerminateCancel;
-    }
-    
-    if (!context.hasChanges) {
-        return NSTerminateNow;
-    }
-    
-    NSError *error = nil;
-    if (![context save:&error]) {
-
-        // Customize this code block to include application-specific recovery steps.
-        BOOL result = [sender presentError:error];
-        if (result) {
-            return NSTerminateCancel;
-        }
-
-        NSString *question = NSLocalizedString(@"Could not save changes while quitting. Quit anyway?", @"Quit without saves error question message");
-        NSString *info = NSLocalizedString(@"Quitting now will lose any changes you have made since the last successful save", @"Quit without saves error question info");
-        NSString *quitButton = NSLocalizedString(@"Quit anyway", @"Quit anyway button title");
-        NSString *cancelButton = NSLocalizedString(@"Cancel", @"Cancel button title");
-        NSAlert *alert = [[NSAlert alloc] init];
-        [alert setMessageText:question];
-        [alert setInformativeText:info];
-        [alert addButtonWithTitle:quitButton];
-        [alert addButtonWithTitle:cancelButton];
-
-        NSInteger answer = [alert runModal];
-        
-        if (answer == NSAlertSecondButtonReturn) {
-            return NSTerminateCancel;
-        }
-    }
-
-    return NSTerminateNow;
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
+    return YES;
 }
 
 @end
