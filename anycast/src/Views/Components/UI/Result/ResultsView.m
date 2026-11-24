@@ -6,8 +6,8 @@
 //
 
 #import "ResultsView.h"
-#import "ResultItemView.h"
-#import "Special/FlippedView.h"
+#import "ResultItem.h"
+#import "../../../../Models/FlippedView.h"
 
 #define ROW_HEIGHT 40
 
@@ -44,12 +44,12 @@ NS_ASSUME_NONNULL_BEGIN
     CGFloat rowHeight = 40;
     
     for (NSUInteger i = 0; i < [appEntries count]; i++) {
-        ResultItemView *item = [[ResultItemView alloc] initWithFrame:NSMakeRect(8, i * rowHeight, self.bounds.size.width, rowHeight) name:appEntries[i].name];
+        ResultItemView *item = [[ResultItemView alloc] initWithFrame:NSMakeRect(8, i * rowHeight, self.bounds.size.width, rowHeight) name:appEntries[i].name icon:appEntries[i].icon];
         
         [_documentView addSubview:item];
     }
     
-    _documentView.frame = NSMakeRect(0, 0, self.bounds.size.width, appEntries.count * rowHeight);
+    _documentView.frame = NSMakeRect(0, 0, self.bounds.size.width, appEntries.count * rowHeight + 40);
     
 }
 

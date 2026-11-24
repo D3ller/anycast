@@ -6,8 +6,7 @@
 //
 
 #import "FooterView.h"
-#import "../Utils/KeyCap.h"
-#define FOOTER_HEIGHT 36
+#import "../Components/UI/Keycap/KeyCap.h"
 
 @implementation FooterView
 
@@ -22,16 +21,16 @@
 }
 
 - (NSGlassEffectView*)createLeftFooter {
-    NSGlassEffectView *glassIcon = [[NSGlassEffectView alloc] initWithFrame:NSMakeRect(8, 8, FOOTER_HEIGHT, FOOTER_HEIGHT)];
+    NSGlassEffectView *glassIcon = [[NSGlassEffectView alloc] initWithFrame:NSMakeRect(8, 8, footerHeight, footerHeight)];
     
-    glassIcon.cornerRadius = FOOTER_HEIGHT / 2;
+    glassIcon.cornerRadius = footerHeight / 2;
     
     return glassIcon;
 }
 
 - (NSGlassEffectView*)createRightFooter {
     
-    NSGlassEffectView *glass = [[NSGlassEffectView alloc] initWithFrame:NSMakeRect(100, 8, self.bounds.size.width / 2, FOOTER_HEIGHT)];
+    NSGlassEffectView *glass = [[NSGlassEffectView alloc] initWithFrame:NSMakeRect(100, 8, self.bounds.size.width / 2, footerHeight)];
     NSStackView *stackView = [[NSStackView alloc] init];
     
     stackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
@@ -39,7 +38,7 @@
     stackView.alignment = NSLayoutAttributeCenterY;
     stackView.edgeInsets = NSEdgeInsetsMake(0, 14, 0, 14);
         
-    glass.cornerRadius = FOOTER_HEIGHT / 2;
+    glass.cornerRadius = footerHeight / 2;
     
     KeyCap *k = [[KeyCap alloc] initWithText:@"K"];
     k.frame = NSMakeRect(350, 20, 18, 18);

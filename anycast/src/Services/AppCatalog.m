@@ -20,11 +20,17 @@ NS_ASSUME_NONNULL_BEGIN
     NSArray<NSURL *> *roots = @[[NSURL fileURLWithPath:@"/Applications"], [NSURL fileURLWithPath: @"/System/Applications"], [NSURL fileURLWithPath:@"/System/Library/CoreServices/Applications"], [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Applications"]]];
     
     for (NSURL *root in roots) {
-        NSDirectoryEnumerator *e = [fm enumeratorAtURL:root includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants errorHandler:nil];
+        NSDirectoryEnumerator *e = [fm enumeratorAtURL:root includingPropertiesForKeys:@[NSURLLocalizedNameKey] options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants errorHandler:nil];
         
         for (NSURL *url in e) {
             if([url.pathExtension isEqualToString:@"app"]) {
-                AppEntry *appEntry = [[AppEntry alloc] initWithName:[url.lastPathComponent stringByDeletingPathExtension] path:[url path]];
+                
+                NSString *name = nil;
+                [url getResourceValue:&name forKey:NSURLLocalizedNameKey error:nil];
+                if (!name) name = [url.lastPathComponent stringByDeletingPathExtension];
+                if ([name hasSuffix:@".app"]) name = [name stringByDeletingPathExtension];
+                
+                AppEntry *appEntry = [[AppEntry alloc] initWithName:name path:[url path]];
                 
                 [appEntries addObject:appEntry];
             }

@@ -49,8 +49,9 @@ NS_ASSUME_NONNULL_BEGIN
                                    h);
     
     NSColor *placeholderColor = [NSColor colorWithWhite:1 alpha:0.40];
+    NSString *text = NSLocalizedString(@"search.placeholder", nil);
     
-    searchField.placeholderAttributedString = [[NSAttributedString alloc] initWithString:@"Rechercher des apps et des commandes..." attributes:@{NSForegroundColorAttributeName: placeholderColor, NSFontAttributeName: searchField.font}];
+    searchField.placeholderAttributedString = [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName: placeholderColor, NSFontAttributeName: searchField.font}];
     
     return searchField;
 }

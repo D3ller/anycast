@@ -24,10 +24,6 @@ NS_ASSUME_NONNULL_BEGIN
     return self;
 }
 
-- (NSString*)description {
-    return [NSString stringWithFormat:@"Mon nom est %@ app.", _name];
-}
-
 @end
 
 NS_ASSUME_NONNULL_END

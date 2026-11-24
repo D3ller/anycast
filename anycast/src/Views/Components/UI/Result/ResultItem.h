@@ -6,6 +6,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "../Theme.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -14,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithFrame:(NSRect)frame NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithFrame:(NSRect)frame name:(NSString *)name;
+- (instancetype)initWithFrame:(NSRect)frameRect name:(nonnull NSString *)name icon:(NSImage*)icon;
 @end
 
 NS_ASSUME_NONNULL_END

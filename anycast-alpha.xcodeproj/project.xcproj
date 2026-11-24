@@ -8,11 +8,70 @@
     "development": "en",
     "supported": [
       "Base",
+      "fr",
     ],
   },
   "files": [
+    { "path": "Localizable.xcstrings", "target-membership": [ "anycast/resources" ] },
+    {
+      "kind": "group",
+      "path": "anycast",
+      "children": [
+        {
+          "kind": "group",
+          "path": "src",
+          "children": [
+            {
+              "kind": "group",
+              "path": "Models",
+              "children": [
+                { "path": "AppEntry.h" },
+                { "path": "FlippedView.h" },
+                { "path": "FlippedView.m", "target-membership": [ "anycast/compile-sources" ] },
+                { "path": "AppEntry.m", "target-membership": [ "anycast/compile-sources" ] },
+                { "path": "GlassWindow.h" },
+                { "path": "GlassWindow.m", "target-membership": [ "anycast/compile-sources" ] },
+              ],
+            }, {
+              "kind": "group",
+              "path": "Services",
+              "children": [
+                { "path": "AppCatalog.h" },
+                { "path": "AppCatalog.m", "target-membership": [ "anycast/compile-sources" ] },
+              ],
+            }, {
+              "kind": "group",
+              "path": "Views",
+              "children": [
+                {
+                  "kind": "group",
+                  "path": "Layouts",
+                  "children": [
+                    { "path": "SearchBarView.m", "target-membership": [ "anycast/compile-sources" ] },
+                    { "path": "SearchBarView.h" },
+                    { "path": "FooterView.h" },
+                    { "path": "FooterView.m", "target-membership": [ "anycast/compile-sources" ] },
+                  ],
+                }, {
+                  "kind": "group",
+                  "path": "Components",
+                  "children": [
+                    { "kind": "folder", "path": "UI", "target-membership": [ "anycast" ] },
+                  ],
+                },
+              ],
+            },
+            { "path": "Theme.h" },
+            { "path": "Theme.m", "target-membership": [ "anycast/compile-sources" ] },
+          ],
+        },
+        { "path": "AppDelegate.h" },
+        { "path": "AppDelegate.m", "target-membership": [ "anycast/compile-sources" ] },
+        { "path": "Assets.xcassets", "target-membership": [ "anycast/resources" ] },
+        { "path": "main.m", "target-membership": [ "anycast/compile-sources" ] },
+      ],
+    },
     { "path": "readme.md", "target-membership": [ "anycast/resources" ] },
-    { "kind": "folder", "path": "app-test", "target-membership": [ "anycast" ] },
     { "kind": "folder", "path": "app-testTests", "target-membership": [ "anycast-testTests" ] },
     { "kind": "folder", "path": "app-testUITests", "target-membership": [ "anycast-testUITests" ] },
     {
@@ -47,7 +106,7 @@
         "ENABLE_HARDENED_RUNTIME": "YES",
         "GENERATE_INFOPLIST_FILE": "YES",
         "INFOPLIST_KEY_CFBundleDisplayName": "Anycast Alpha",
-        "INFOPLIST_KEY_NSHumanReadableCopyright": "Corentin NELHOMME",
+        "INFOPLIST_KEY_NSHumanReadableCopyright": "d3ller",
         "INFOPLIST_KEY_NSPrincipalClass": "NSApplication",
         "INFOPLIST_KEY_NSViewGestureRecognizerIsExclusive": "NO",
         "LD_RUNPATH_SEARCH_PATHS": [
@@ -177,6 +236,7 @@
     "MTL_FAST_MATH": "YES",
     "ONLY_ACTIVE_ARCH[config=Debug]": "YES",
     "SDKROOT": "macosx",
+    "SWIFT_EMIT_LOC_STRINGS": "YES",
   },
   "last-upgrade": "27.2",
 }

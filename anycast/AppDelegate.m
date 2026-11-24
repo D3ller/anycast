@@ -5,11 +5,12 @@
 //  Created by d3ller on 21/11/2026.
 //
 
+#import "src/Theme.h"
 #import "AppDelegate.h"
-#import "src/Views/SearchBarView.h"
-#import "src/Views/ResultsView.h"
+#import "src/Views/Layouts/SearchBarView.h"
+#import "src/Views/Components/UI/Result/ResultsView.h"
 #import "src/Views/Layouts/FooterView.h"
-#import "src/GlassWindow.h"
+#import "src/Models/GlassWindow.h"
 #import "src/Services/AppCatalog.h"
 
 @interface AppDelegate ()
@@ -22,9 +23,15 @@
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    NSRect frame = NSMakeRect(0, 0, 750, 475);
+    NSRect frame = NSMakeRect(0, 0, panelWidth, panelHeight);
     
-    _window = [[GlassWindow alloc] initWithContentRect:frame styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:NO];
+    NSRect screen = NSScreen.mainScreen.visibleFrame;
+    NSRect windowFrame = NSMakeRect(NSMidX(screen) - panelWidth / 2,
+                                    NSMaxY(screen) - screen.size.height * panelTopRatio - panelHeight,
+                                    panelWidth,
+                                    panelHeight);
+    
+    _window = [[GlassWindow alloc] initWithContentRect:windowFrame styleMask:NSWindowStyleMaskBorderless backing:NSBackingStoreBuffered defer:NO];
     _window.appearance = [NSAppearance appearanceNamed:NSAppearanceNameDarkAqua];
     
     NSView *content = [[NSView alloc] initWithFrame:frame];
