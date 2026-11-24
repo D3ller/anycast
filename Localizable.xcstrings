@@ -1,0 +1,24 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "search.placeholder" : {
+      "comment" : "Barre de recherche d’application",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search apps and commands..."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rechercher des apps et des commandes..."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}
