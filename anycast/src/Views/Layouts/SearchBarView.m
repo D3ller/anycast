@@ -71,6 +71,30 @@ NS_ASSUME_NONNULL_BEGIN
     return magnifier;
 }
 
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)commandSelector {
+    if(commandSelector == @selector(moveDown:) || commandSelector == @selector(moveForward:)) {
+        if(self.onMove) self.onMove(1);
+        return YES;
+    } else if(commandSelector == @selector(moveUp:) || commandSelector == @selector(moveBackward:)) {
+        if(self.onMove) self.onMove(-1);
+        return YES;
+    } else if (commandSelector == @selector(cancelOperation:)) {
+        if(self.onCancel) self.onCancel();
+        return YES;
+    } else if (commandSelector == @selector(insertNewline:)) {
+        if(self.onEnter) self.onEnter();
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (void)controlTextDidChange:(NSNotification *)obj {
+    if(self.onSearch) {
+        self.onSearch(_searchField.stringValue);
+    }
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

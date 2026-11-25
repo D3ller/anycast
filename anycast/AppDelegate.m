@@ -5,24 +5,27 @@
 //  Created by d3ller on 21/11/2026.
 //
 
-#import "src/Theme.h"
+#import "Theme.h"
 #import "AppDelegate.h"
-#import "src/Views/Layouts/SearchBarView.h"
-#import "src/Views/Components/UI/Result/ResultsView.h"
-#import "src/Views/Layouts/FooterView.h"
-#import "src/Models/GlassWindow.h"
-#import "src/Services/AppCatalog.h"
+#import "SearchBarView.h"
+#import "ResultsView.h"
+#import "FooterView.h"
+#import "GlassWindow.h"
+#import "AppCatalog.h"
+#import "CommandCatalog.h"
+#import "ResultHeader.h"
 
 @interface AppDelegate ()
 
 @property (nonatomic, strong) GlassWindow *window;
-@property (nonatomic, strong) NSArray<AppEntry*> *appEntries;
+@property (nonatomic, strong) NSArray<ResultSection*> *sections;
 
 @end
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+    [self setupMain];
     NSRect frame = NSMakeRect(0, 0, panelWidth, panelHeight);
     
     NSRect screen = NSScreen.mainScreen.visibleFrame;
@@ -53,7 +56,6 @@
     scrim.layer.backgroundColor = [NSColor colorWithWhite:0 alpha:0.30].CGColor;
     scrim.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     [content addSubview:scrim];
-
     
     SearchBarView *searchBarView = [[SearchBarView alloc] initWithFrame:NSMakeRect(0, 415, 750, 60)];
     [content addSubview:searchBarView];
@@ -63,15 +65,61 @@
     
     FooterView *footerView = [[FooterView alloc] initWithFrame:NSMakeRect(0, 0, 750, 52)];
     [content addSubview:footerView];
+            
+
+    ResultSection *appsSection = [[ResultSection alloc] initWithTitle:NSLocalizedString(@"section.applications.title", nil) entries:[[[AppCatalog alloc] init] scanApplications]];
+    ResultSection *commandsSection = [[ResultSection alloc] initWithTitle:NSLocalizedString(@"section.commands.title", nil) entries:[[[CommandCatalog alloc] init] systemCommands]];
     
-    AppCatalog *appCatalog = [[AppCatalog alloc] init];
-    _appEntries = [appCatalog scanApplications];
+    NSMutableArray<ResultSection *> *entries = [[NSMutableArray<ResultSection *> alloc] init];
+    [entries addObject:appsSection];
+    [entries addObject:commandsSection];
     
-    [resultsView setItems:_appEntries];
+    _sections = entries;
+    resultsView.onSelect = ^(ResultEntry *entry) {
+        [footerView setEntry:entry];
+    };
     
+    [resultsView setSections:_sections];
+    
+    __weak typeof(self) weakSelf = self;
+    resultsView.onActivate = ^(ResultEntry *entry) {
+        entry.perform();
+        //[weakSelf.window orderOut:nil];
+    };
+    
+    searchBarView.onMove = ^(NSInteger direction) {
+        [resultsView moveSelectionBy:direction];
+    };
+    
+    searchBarView.onEnter = ^{
+        [resultsView activateSelected];
+    };
+    
+    searchBarView.onCancel = ^{
+        [weakSelf.window orderOut:nil];
+    };
+    
+    searchBarView.onSearch = ^(NSString *search) {
+        NSString *trimmedString = [search stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if([trimmedString length] == 0) {
+            [resultsView setSections:weakSelf.sections];
+            return;
+        }
+        
+        NSMutableArray<ResultEntry *> *appCustomEntries = [[NSMutableArray<ResultEntry *> alloc] init];
+        for (ResultSection *section in weakSelf.sections) {
+            for (ResultEntry *entry in section.entries) {
+                if([entry.name rangeOfString:trimmedString options:NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch].location != NSNotFound) {
+                    [appCustomEntries addObject:entry];
+                }
+            }
+        }
+        
+        [resultsView setItems:appCustomEntries];
+    };
     
     [_window setTitle:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]];
-        
+    
     _window.opaque = NO;
     _window.backgroundColor = [NSColor clearColor];
     _window.hasShadow = NO;
@@ -96,6 +144,23 @@
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
     return YES;
+}
+
+- (void)setupMain {
+    NSMenu *menu = [[NSMenu alloc] init];
+    NSMenuItem *menuItem = [[NSMenuItem alloc] init];
+    
+    NSMenu *editMenu = [[NSMenu alloc] initWithTitle:@"Edit"];
+    
+    [editMenu addItemWithTitle:@"Select All" action:@selector(selectAll:) keyEquivalent:@"a"];
+    [editMenu addItemWithTitle:@"Copy" action:@selector(copy:) keyEquivalent:@"c"];
+    [editMenu addItemWithTitle:@"Paste" action:@selector(paste:) keyEquivalent:@"v"];
+    [editMenu addItemWithTitle:@"Undo" action:NSSelectorFromString(@"undo:") keyEquivalent:@"z"];
+    [editMenu addItemWithTitle:@"Cut" action:@selector(cut:) keyEquivalent:@"x"];
+    
+    [menu addItem:menuItem];
+    menuItem.submenu = editMenu;
+    NSApp.mainMenu = menu;
 }
 
 @end
