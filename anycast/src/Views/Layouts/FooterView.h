@@ -6,11 +6,14 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "../../Theme.h"
+#import "Theme.h"
+#import "ResultEntry.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FooterView : NSView
+
+- (void)setEntry:(nullable ResultEntry *)entry;
 
 @end
 
