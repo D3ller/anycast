@@ -6,17 +6,16 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "ResultEntry.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AppEntry : NSObject
+@interface AppEntry : ResultEntry
 
-@property (nonatomic, copy) NSString* name;
 @property (nonatomic, copy) NSString* path;
-@property (nonatomic, strong, nullable) NSImage* icon;
 
 - (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithName:(NSString*)name path:(NSString*)path;
+- (instancetype)initWithName:(NSString *)name path:(NSString *)path;
 
 @end
 

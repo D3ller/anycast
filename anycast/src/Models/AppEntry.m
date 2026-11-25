@@ -12,17 +12,18 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation AppEntry
 
 - (instancetype)initWithName:(NSString *)name path:(NSString *)path {
-    self = [self init];
+    self = [super initWithName:name icon:[[NSWorkspace sharedWorkspace] iconForFile:path] kind:ResultKindApplication perform:^{
+        NSURL *url = [NSURL fileURLWithPath:path];
+        NSWorkspaceOpenConfiguration *config = [NSWorkspaceOpenConfiguration configuration];
+        [[NSWorkspace sharedWorkspace] openApplicationAtURL:url configuration:config completionHandler:nil];
+    }];
     if(self) {
-        _name = name;
-        _path = path;
-        
-        NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFile:path];
-        _icon = icon;
+        _path = [path copy];
     }
     
     return self;
 }
+
 
 @end
 

@@ -6,7 +6,7 @@
 //
 
 #import "AppCatalog.h"
-#import "../AppEntry.h"
+#import "AppEntry.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSMutableArray<AppEntry *> *appEntries = [[NSMutableArray<AppEntry *> alloc] init];
     NSFileManager *fm = NSFileManager.defaultManager;
     
-    NSArray<NSURL *> *roots = @[[NSURL fileURLWithPath:@"/Applications"], [NSURL fileURLWithPath: @"/System/Applications"], [NSURL fileURLWithPath:@"/System/Library/CoreServices/Applications"], [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Applications"]]];
+    NSArray<NSURL *> *roots = @[[NSURL fileURLWithPath:@"/Applications"], [NSURL fileURLWithPath: @"/System/Applications"], [NSURL fileURLWithPath:@"/System/Library/CoreServices/Applications"], [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Applications"]], [NSURL fileURLWithPath:@"/System/Cryptexes/App/System/Applications"]];
     
     for (NSURL *root in roots) {
         NSDirectoryEnumerator *e = [fm enumeratorAtURL:root includingPropertiesForKeys:@[NSURLLocalizedNameKey] options:NSDirectoryEnumerationSkipsHiddenFiles | NSDirectoryEnumerationSkipsPackageDescendants errorHandler:nil];
