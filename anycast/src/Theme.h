@@ -20,6 +20,7 @@ static const CGFloat iconSize = 26;
 static const CGFloat rowHeight = 40;
 
 // Footer
+static const CGFloat headerHeight = 28;
 static const CGFloat footerHeight = 36;
 
 static const CGFloat padding = 8;
